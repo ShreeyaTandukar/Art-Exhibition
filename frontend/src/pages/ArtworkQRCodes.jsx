@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { fetchAllHeritage } from "../services/heritageService";
@@ -30,6 +29,11 @@ const ArtworkQRCodes = () => {
     loadArtworks();
   }, []);
 
+  // Builds the URL stored inside the QR code.
+  // encodeURIComponent keeps slugs with spaces / apostrophes safe.
+  const getArtworkUrl = (site) =>
+    `${window.location.origin}/premium/${encodeURIComponent(site.slug)}`;
+
   const downloadQRCode = (site) => {
     const svg = document.getElementById(`qr-${site._id}`);
 
@@ -37,20 +41,28 @@ const ArtworkQRCodes = () => {
 
     const svgData = new XMLSerializer().serializeToString(svg);
 
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
+    // The QR itself is drawn at qrSize, surrounded by a white
+    // border (quiet zone). Without this border, scanners often
+    // fail to detect the downloaded image.
+    const qrSize = 1000;
+    const margin = 150;
+    const totalSize = qrSize + margin * 2;
 
-    const size = 1000;
-    canvas.width = size;
-    canvas.height = size;
+    const canvas = document.createElement("canvas");
+    canvas.width = totalSize;
+    canvas.height = totalSize;
+
+    const context = canvas.getContext("2d");
 
     const img = new Image();
 
     img.onload = () => {
+      // White background for the whole image
       context.fillStyle = "#FFFFFF";
-      context.fillRect(0, 0, size, size);
+      context.fillRect(0, 0, totalSize, totalSize);
 
-      context.drawImage(img, 0, 0, size, size);
+      // Draw the QR in the middle, leaving the margin on every side
+      context.drawImage(img, margin, margin, qrSize, qrSize);
 
       const pngUrl = canvas.toDataURL("image/png");
 
@@ -105,7 +117,7 @@ const ArtworkQRCodes = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {sites.map((site) => {
-            const artworkUrl = `${window.location.origin}/premium/${site.slug}`;
+            const artworkUrl = getArtworkUrl(site);
 
             return (
               <div

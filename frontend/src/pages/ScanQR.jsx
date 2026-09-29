@@ -25,6 +25,10 @@ import { getArtByQrId } from "../data/exhibitionArts";
 //       ↓
 // If yes → open that specific artwork
 //       ↓
+// Check if it is this website's home page QR
+//       ↓
+// If yes → open home page
+//       ↓
 // Otherwise → extract HeritageLink QR ID
 //       ↓
 // Ask backend which heritage place it belongs to
@@ -62,15 +66,15 @@ const ScanQR = () => {
       const text = String(rawText).trim();
 
       // =========================================================
-      // CASE 1 — EXISTING ARTWORK QR
+      // CASE 1 — WEBSITE URL QR
       //
-      // Your current QR generator creates URLs like:
+      // 1a) Artwork QR:
+      //     https://art-exhibition-1.onrender.com/premium/bagh-bhairav
+      //     → opens /premium/bagh-bhairav
       //
-      // https://art-exhibition-1.onrender.com/premium/bagh-bhairav
-      //
-      // We extract "bagh-bhairav" and directly open:
-      //
-      // /premium/bagh-bhairav
+      // 1b) Home page QR:
+      //     https://art-exhibition-1.onrender.com/
+      //     → opens /
       // =========================================================
 
       if (/^https?:\/\//i.test(text)) {
@@ -79,17 +83,33 @@ const ScanQR = () => {
 
           const premiumIndex = url.pathname.indexOf("/premium/");
 
+          // 1a) Artwork QR
           if (premiumIndex !== -1) {
-            const slug = url.pathname
-              .slice(premiumIndex + "/premium/".length)
-              .split("/")[0];
+            const slug = decodeURIComponent(
+              url.pathname
+                .slice(premiumIndex + "/premium/".length)
+                .split("/")[0]
+            );
 
             if (slug) {
-              setScanDestination(`/premium/${slug}`);
+              setScanDestination(
+                `/premium/${encodeURIComponent(slug)}`
+              );
               setStatus("success-loader");
 
               return;
             }
+          }
+
+          // 1b) QR that points to this website's home page
+          if (
+            url.origin === window.location.origin &&
+            (url.pathname === "/" || url.pathname === "")
+          ) {
+            setScanDestination("/");
+            setStatus("success-loader");
+
+            return;
           }
         } catch {
           // If it is not a valid URL, continue with normal QR handling.
@@ -162,7 +182,9 @@ const ScanQR = () => {
         // Instead of going to "/",
         // save the specific artwork destination.
         // -------------------------------------------------------
-        setScanDestination(`/premium/${site.slug}`);
+        setScanDestination(
+          `/premium/${encodeURIComponent(site.slug)}`
+        );
 
         setStatus("success-loader");
       } catch (error) {
