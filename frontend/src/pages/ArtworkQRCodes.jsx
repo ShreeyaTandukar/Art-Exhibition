@@ -1,6 +1,6 @@
+
 import React, { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
-
 import { fetchAllHeritage } from "../services/heritageService";
 import HeritageLoader from "../components/HeritageLoader";
 
@@ -16,7 +16,6 @@ const ArtworkQRCodes = () => {
         setError("");
 
         const allSites = await fetchAllHeritage();
-
         setSites(allSites);
       } catch (err) {
         setError(
@@ -31,86 +30,49 @@ const ArtworkQRCodes = () => {
     loadArtworks();
   }, []);
 
-  // =========================================================
-  // DOWNLOAD QR AS SVG
-  // =========================================================
   const downloadQRCode = (site) => {
     const svg = document.getElementById(`qr-${site._id}`);
 
-    if (!svg) {
-      return;
-    }
+    if (!svg) return;
 
-    // Serialize the QR SVG
     const svgData = new XMLSerializer().serializeToString(svg);
 
-    // Create an SVG document with a white background.
-    // The QR itself is 220x220 and the extra space gives
-    // scanners a proper quiet zone around the QR.
-    const qrSize = 220;
-    const margin = 40;
-    const totalSize = qrSize + margin * 2;
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
 
-    const svgWithMargin = `
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="${totalSize}"
-        height="${totalSize}"
-        viewBox="0 0 ${totalSize} ${totalSize}"
-      >
-        <rect
-          width="${totalSize}"
-          height="${totalSize}"
-          fill="#FFFFFF"
-        />
+    const size = 1000;
+    canvas.width = size;
+    canvas.height = size;
 
-        <g transform="translate(${margin}, ${margin})">
-          ${svgData
-            .replace(/<svg[^>]*>/, "")
-            .replace(/<\/svg>/, "")}
-        </g>
-      </svg>
-    `;
+    const img = new Image();
 
-    // Create SVG file
-    const blob = new Blob(
-      [svgWithMargin],
-      {
-        type: "image/svg+xml;charset=utf-8",
-      }
-    );
+    img.onload = () => {
+      context.fillStyle = "#FFFFFF";
+      context.fillRect(0, 0, size, size);
 
-    const url = URL.createObjectURL(blob);
+      context.drawImage(img, 0, 0, size, size);
 
-    // Download
-    const downloadLink = document.createElement("a");
+      const pngUrl = canvas.toDataURL("image/png");
 
-    downloadLink.href = url;
-    downloadLink.download = `${site.slug}-QR.svg`;
+      const downloadLink = document.createElement("a");
+      downloadLink.href = pngUrl;
+      downloadLink.download = `${site.slug}-QR.png`;
 
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    };
 
-    // Clean up
-    URL.revokeObjectURL(url);
+    img.src =
+      "data:image/svg+xml;charset=utf-8," +
+      encodeURIComponent(svgData);
   };
-
-  // =========================================================
-  // LOADING
-  // =========================================================
 
   if (loading) {
     return (
-      <HeritageLoader
-        message="Loading artwork QR codes..."
-      />
+      <HeritageLoader message="Loading artwork QR codes..." />
     );
   }
-
-  // =========================================================
-  // ERROR
-  // =========================================================
 
   if (error) {
     return (
@@ -128,15 +90,9 @@ const ArtworkQRCodes = () => {
     );
   }
 
-  // =========================================================
-  // PAGE
-  // =========================================================
-
   return (
     <div className="min-h-screen bg-[#EFE8DE] px-5 py-10">
       <div className="max-w-7xl mx-auto">
-
-        {/* Page heading */}
         <div className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-[#4B2E2A]">
             Individual Artwork QR Codes
@@ -147,17 +103,8 @@ const ArtworkQRCodes = () => {
           </p>
         </div>
 
-        {/* QR cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-
           {sites.map((site) => {
-            // This is the URL stored inside the QR.
-            //
-            // Example:
-            // https://art-exhibition-1.onrender.com/premium/bagh-bhairav
-            //
-            // The updated ScanQR.jsx understands this format
-            // and opens the specific artwork.
             const artworkUrl = `${window.location.origin}/premium/${site.slug}`;
 
             return (
@@ -165,43 +112,33 @@ const ArtworkQRCodes = () => {
                 key={site._id}
                 className="bg-white rounded-3xl shadow-lg p-6 flex flex-col items-center"
               >
-                {/* Artwork name */}
                 <h2 className="text-lg font-bold text-[#4B2E2A] text-center">
                   {site.name}
                 </h2>
 
-                {/* QR */}
-                <div className="mt-5 bg-white p-10 rounded-2xl border border-[#E8DFD0] shadow-sm">
-
+                <div className="mt-5 bg-white p-3 rounded-2xl border border-[#E8DFD0]">
                   <QRCodeSVG
                     id={`qr-${site._id}`}
                     value={artworkUrl}
                     size={220}
                     level="H"
-                    bgColor="#FFFFFF"
-                    fgColor="#000000"
-                    includeMargin={true}
                   />
-
                 </div>
 
-                {/* Download SVG */}
                 <button
                   type="button"
                   onClick={() => downloadQRCode(site)}
                   className="mt-5 px-5 py-2.5 rounded-xl bg-[#7B1E23] text-white font-semibold hover:opacity-90 transition"
                 >
-                  Download QR (SVG)
+                  Download QR
                 </button>
 
-                {/* URL shown for reference */}
                 <p className="mt-4 text-xs text-gray-500 text-center break-all">
                   {artworkUrl}
                 </p>
               </div>
             );
           })}
-
         </div>
       </div>
     </div>
