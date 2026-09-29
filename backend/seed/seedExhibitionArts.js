@@ -668,10 +668,10 @@ const arts = [
   },
 
   {
-    slug: "contemporary-art-monk",
+    slug: "Coagulation",
     codePrefix: "RMS",
     qrId: "HL-106",
-    name: "Contemporary Art",
+    name: "Coagulation",
     shortDescription:
       "The artwork is a photo overlay poster image of a monk worshipping a deity with another photo of a courtyard central deity's face details being painted overlayed on top of his head. The surrounding courtyard area is colored vibrantly, meaning to detach the feeling of reality in the scene. This poster is meant to invoke a feeling of self importance and self awareness about one's own existence in contrast to the world around.",
     tagline: "DIGITAL ARTWORK",
@@ -851,10 +851,10 @@ const arts = [
   },
 
   {
-    slug: "the-hidden-world-beneath-the-surface",
+    slug: "Reflection of Freedom",
     codePrefix: "NIT",
     qrId: "HL-110",
-    name: "The Hidden World Beneath the Surface",
+    name: "Reflection of Freedom",
     shortDescription:
       "An expressive oil painting portraying a figure submerged beneath rippling water, blending vibrant red and orange tones with deep blue reflections to create a sense of movement, mystery, and emotional depth.",
     tagline: "HANDCRAFTED ARTWORK",
@@ -1080,10 +1080,10 @@ const arts = [
   },
 
   {
-    slug: "home-identity-the-journey-beyond",
+    slug: "From the Himalayas to the Stars",
     codePrefix: "NIM2",
     qrId: "HL-115",
-    name: "Home, Identity & The Journey Beyond",
+    name: "From the Himalayas to the Stars",
     shortDescription:
       "An astronaut carrying the spirit of Nepal into the unknown, symbolizing identity, exploration, and connection to home.",
     tagline: "DIGITAL ARTWORK",
@@ -1128,10 +1128,10 @@ const arts = [
   // ── TRADITIONAL ARTWORK ──────────────────────────────────────
 
   {
-    slug: "thangka-painting-shakyamuni",
+    slug: "Shakyamuni Buddha",
     codePrefix: "SHA",
     qrId: "HL-116",
-    name: "Thangka Painting",
+    name: "Shakyamuni Buddha",
     shortDescription:
       "This artwork is traditional hand-painted thangka painting depicting Shakyamuni Buddha with bhumisparsha mudra.",
     tagline: "TRADITIONAL ARTWORK",
@@ -1316,10 +1316,10 @@ const arts = [
   },
 
   {
-    slug: "transformation-through-loss-and-survival",
+    slug: "The Last Witness",
     codePrefix: "MAH",
     qrId: "HL-120",
-    name: "Transformation Through Loss and Survival",
+    name: "The Last Witness",
     shortDescription:
       "The skull represents the pieces of ourselves that had to die—the old version of us, lost innocence, people we let go of and beliefs that no longer remain. Yet, from those wounds, something new begins to grow.",
     tagline: "CHARCOAL ARTWORK",
@@ -1520,10 +1520,10 @@ const arts = [
   },
 
   {
-    slug: "himalayan-serenity-village-life",
+    slug: "Where the Mountains Meet Home",
     codePrefix: "ROS",
     qrId: "HL-125",
-    name: "Himalayan Serenity & Village Life",
+    name: "Where the Mountains Meet Home",
     shortDescription:
       "A peaceful Himalayan village nestled beneath majestic snow-covered peaks, capturing the harmony between nature, spirituality, and everyday mountain life.",
     tagline: "HANDPAINTED ART",
