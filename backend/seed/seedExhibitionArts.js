@@ -387,10 +387,10 @@ const arts = [
   // ── HANDPAINTED ──────────────────────────────────────────────
 
   {
-  slug: "self-image-self-acceptance-duality",
+  slug: "Nature and it’s cycle",
   codePrefix: "RIK",
   qrId: "HL-101",
-  name: "Self-Image, Self-Acceptance, Duality",
+  name: "Nature and it’s cycle",
 
   shortDescription:
     "This piece represents the inevitability of life’s cycle. The tiger’s calm gaze reflects the peace found in accepting one’s destiny, while the swirling water symbolizes nature’s endless cycle of change, renewal, and continuity.",
