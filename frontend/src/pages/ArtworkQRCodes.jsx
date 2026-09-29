@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { fetchAllHeritage } from "../services/heritageService";
@@ -15,7 +16,6 @@ const ArtworkQRCodes = () => {
         setError("");
 
         const allSites = await fetchAllHeritage();
-
         setSites(allSites);
       } catch (err) {
         setError(
@@ -29,6 +29,44 @@ const ArtworkQRCodes = () => {
 
     loadArtworks();
   }, []);
+
+  const downloadQRCode = (site) => {
+    const svg = document.getElementById(`qr-${site._id}`);
+
+    if (!svg) return;
+
+    const svgData = new XMLSerializer().serializeToString(svg);
+
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+
+    const size = 1000;
+    canvas.width = size;
+    canvas.height = size;
+
+    const img = new Image();
+
+    img.onload = () => {
+      context.fillStyle = "#FFFFFF";
+      context.fillRect(0, 0, size, size);
+
+      context.drawImage(img, 0, 0, size, size);
+
+      const pngUrl = canvas.toDataURL("image/png");
+
+      const downloadLink = document.createElement("a");
+      downloadLink.href = pngUrl;
+      downloadLink.download = `${site.slug}-QR.png`;
+
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    };
+
+    img.src =
+      "data:image/svg+xml;charset=utf-8," +
+      encodeURIComponent(svgData);
+  };
 
   if (loading) {
     return (
@@ -80,11 +118,20 @@ const ArtworkQRCodes = () => {
 
                 <div className="mt-5 bg-white p-3 rounded-2xl border border-[#E8DFD0]">
                   <QRCodeSVG
+                    id={`qr-${site._id}`}
                     value={artworkUrl}
                     size={220}
                     level="H"
                   />
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => downloadQRCode(site)}
+                  className="mt-5 px-5 py-2.5 rounded-xl bg-[#7B1E23] text-white font-semibold hover:opacity-90 transition"
+                >
+                  Download QR
+                </button>
 
                 <p className="mt-4 text-xs text-gray-500 text-center break-all">
                   {artworkUrl}

@@ -1,25 +1,20 @@
 import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, QrCode, RefreshCw, AlertCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  QrCode,
+  RefreshCw,
+  AlertCircle,
+} from "lucide-react";
 
 import QRScanner from "../components/scanner/QRScanner";
 import PremiumFooter from "../components/premium/PremiumFooter";
 import HeritageLoader from "../components/HeritageLoader";
+
 import { extractQrId } from "../utils/qr";
 import { fetchHeritageByQrId } from "../services/heritageService";
 import { getArtByQrId } from "../data/exhibitionArts";
 
-// FEATURE 1 — "Scan More QR"
-//
-// Flow (updated):
-//   scanner decodes text
-//     -> extract the QR ID
-//     -> ask the backend which heritage place it is
-//     -> show HeritageLink logo animation loader
-//     -> navigate to the HeritageLink homepage (catalogue of ALL arts)
-//
-// The homepage lists every available heritage item. The user then chooses
-// which art to explore. Badge collection still happens on the detail page.
 const ScanQR = () => {
   const navigate = useNavigate();
 
@@ -28,12 +23,16 @@ const ScanQR = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [canRetry, setCanRetry] = useState(true);
 
+  const [scannedSite, setScannedSite] = useState(null);
+
   const handleResult = useCallback(
     async (rawText) => {
       const qrId = extractQrId(rawText);
 
       if (!qrId) {
-        setErrorMessage("This QR code is not a valid HeritageLink QR code.");
+        setErrorMessage(
+          "This QR code is not a valid HeritageLink QR code."
+        );
         setCanRetry(true);
         setStatus("error");
         return;
@@ -43,27 +42,32 @@ const ScanQR = () => {
 
       try {
         let site = null;
+
         try {
           site = await fetchHeritageByQrId(qrId);
         } catch {
-          // API down — try exhibition catalogue
+          // API unavailable — try the local exhibition catalogue.
           site = getArtByQrId(qrId);
         }
 
         if (!site?.slug) {
-          // Last try static catalogue by QR id
+          // Last try: static catalogue by QR id.
           site = getArtByQrId(qrId);
         }
 
         if (!site?.slug) {
-          setErrorMessage("This HeritageLink QR code is no longer available.");
+          setErrorMessage(
+            "This HeritageLink QR code is no longer available."
+          );
           setCanRetry(true);
           setStatus("error");
           return;
         }
 
-        // QR validated — show the branded logo loader, then go to the
-        // catalogue homepage (all arts listed).
+        // Save the artwork that was scanned.
+        setScannedSite(site);
+
+        // QR successfully validated.
         setStatus("success-loader");
       } catch (error) {
         const serverMessage = error.response?.data?.message;
@@ -85,7 +89,8 @@ const ScanQR = () => {
           );
         } else {
           setErrorMessage(
-            serverMessage || "Something went wrong reading that QR code."
+            serverMessage ||
+              "Something went wrong reading that QR code."
           );
         }
 
@@ -98,21 +103,32 @@ const ScanQR = () => {
 
   const scanAgain = () => {
     setErrorMessage("");
+    setScannedSite(null);
     setStatus("scanning");
   };
 
-  // Full-screen branded loader after successful QR validation
+  // Full-screen branded loader after successful QR validation.
   if (status === "success-loader") {
     return (
       <HeritageLoader
         message="Opening Heritage Collection..."
         duration={2200}
-        onComplete={() => navigate("/", { replace: true })}
+        onComplete={() => {
+          if (scannedSite?.slug) {
+            navigate(`/premium/${scannedSite.slug}`, {
+              replace: true,
+            });
+          } else {
+            navigate("/", {
+              replace: true,
+            });
+          }
+        }}
       />
     );
   }
 
-  // Inline branded loader while looking up the QR
+  // Inline branded loader while looking up the QR.
   if (status === "looking-up") {
     return (
       <HeritageLoader message="Finding this heritage place..." />
@@ -138,26 +154,35 @@ const ScanQR = () => {
             <p className="text-[#D6A94F] text-xs uppercase tracking-widest font-semibold">
               HeritageLink
             </p>
-            <h1 className="text-2xl font-bold">Scan More QR</h1>
+
+            <h1 className="text-2xl font-bold">
+              Scan More QR
+            </h1>
           </div>
         </div>
 
         <p className="mt-3 text-sm text-[#E8DCC8] leading-6">
-          Point your camera at a HeritageLink QR code to open the heritage
-          collection.
+          Point your camera at a HeritageLink QR code to open
+          the heritage collection.
         </p>
       </div>
 
       <div className="flex-1 px-5 md:px-8 py-8">
         <div className="bg-white rounded-3xl shadow-lg p-5 md:p-8">
           {status === "scanning" && (
-            <QRScanner onResult={handleResult} active />
+            <QRScanner
+              onResult={handleResult}
+              active
+            />
           )}
 
           {status === "error" && (
             <div className="py-14 flex flex-col items-center gap-5 text-center px-4">
               <div className="w-20 h-20 rounded-full bg-[#FFF5D8] flex items-center justify-center">
-                <AlertCircle size={38} className="text-[#7B1E23]" />
+                <AlertCircle
+                  size={38}
+                  className="text-[#7B1E23]"
+                />
               </div>
 
               <p className="text-[#4B2E2A] font-semibold text-lg leading-7 max-w-sm">
@@ -191,3 +216,4 @@ const ScanQR = () => {
 };
 
 export default ScanQR;
+
