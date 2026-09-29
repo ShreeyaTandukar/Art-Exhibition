@@ -15,19 +15,103 @@ import { extractQrId } from "../utils/qr";
 import { fetchHeritageByQrId } from "../services/heritageService";
 import { getArtByQrId } from "../data/exhibitionArts";
 
+// FEATURE 1 — "Scan More QR"
+//
+// Flow:
+//
+// QR scanner decodes text
+//       ↓
+// Check if it is an existing /premium/:slug QR
+//       ↓
+// If yes → open that specific artwork
+//       ↓
+// Otherwise → extract HeritageLink QR ID
+//       ↓
+// Ask backend which heritage place it belongs to
+//       ↓
+// Show HeritageLink loader
+//       ↓
+// Open the specific artwork
+//
+// Existing QR codes do NOT need to be regenerated.
+
 const ScanQR = () => {
   const navigate = useNavigate();
 
   // "scanning" | "looking-up" | "success-loader" | "error"
   const [status, setStatus] = useState("scanning");
+
   const [errorMessage, setErrorMessage] = useState("");
+
   const [canRetry, setCanRetry] = useState(true);
 
-  const [scannedSite, setScannedSite] = useState(null);
+  // Stores where we should go after the success loader finishes.
+  const [scanDestination, setScanDestination] = useState(null);
 
   const handleResult = useCallback(
     async (rawText) => {
-      const qrId = extractQrId(rawText);
+      if (!rawText) {
+        setErrorMessage(
+          "This QR code is not a valid HeritageLink QR code."
+        );
+        setCanRetry(true);
+        setStatus("error");
+        return;
+      }
+
+      const text = String(rawText).trim();
+
+      // =========================================================
+      // CASE 1 — EXISTING ARTWORK QR
+      //
+      // Your current QR generator creates URLs like:
+      //
+      // https://art-exhibition-1.onrender.com/premium/bagh-bhairav
+      //
+      // We extract "bagh-bhairav" and directly open:
+      //
+      // /premium/bagh-bhairav
+      // =========================================================
+
+      if (/^https?:\/\//i.test(text)) {
+        try {
+          const url = new URL(text);
+
+          const premiumIndex = url.pathname.indexOf("/premium/");
+
+          if (premiumIndex !== -1) {
+            const slug = url.pathname
+              .slice(premiumIndex + "/premium/".length)
+              .split("/")[0];
+
+            if (slug) {
+              setScanDestination(`/premium/${slug}`);
+              setStatus("success-loader");
+
+              return;
+            }
+          }
+        } catch {
+          // If it is not a valid URL, continue with normal QR handling.
+        }
+      }
+
+      // =========================================================
+      // CASE 2 — NORMAL HERITAGELINK QR
+      //
+      // Examples:
+      //
+      // HL-001
+      // hl001
+      // QR-001
+      // HL 1
+      //
+      // Or:
+      //
+      // https://heritagelink.app/scan?qr=HL-001
+      // =========================================================
+
+      const qrId = extractQrId(text);
 
       if (!qrId) {
         setErrorMessage(
@@ -43,18 +127,26 @@ const ScanQR = () => {
       try {
         let site = null;
 
+        // -------------------------------------------------------
+        // First try the backend.
+        // -------------------------------------------------------
         try {
           site = await fetchHeritageByQrId(qrId);
         } catch {
-          // API unavailable — try the local exhibition catalogue.
+          // API unavailable — try local exhibition catalogue.
           site = getArtByQrId(qrId);
         }
 
+        // -------------------------------------------------------
+        // If backend did not return a site, try local catalogue.
+        // -------------------------------------------------------
         if (!site?.slug) {
-          // Last try: static catalogue by QR id.
           site = getArtByQrId(qrId);
         }
 
+        // -------------------------------------------------------
+        // Still nothing?
+        // -------------------------------------------------------
         if (!site?.slug) {
           setErrorMessage(
             "This HeritageLink QR code is no longer available."
@@ -64,10 +156,14 @@ const ScanQR = () => {
           return;
         }
 
-        // Save the artwork that was scanned.
-        setScannedSite(site);
+        // -------------------------------------------------------
+        // We found the artwork.
+        //
+        // Instead of going to "/",
+        // save the specific artwork destination.
+        // -------------------------------------------------------
+        setScanDestination(`/premium/${site.slug}`);
 
-        // QR successfully validated.
         setStatus("success-loader");
       } catch (error) {
         const serverMessage = error.response?.data?.message;
@@ -101,25 +197,28 @@ const ScanQR = () => {
     []
   );
 
+  // =========================================================
+  // SCAN AGAIN
+  // =========================================================
+
   const scanAgain = () => {
     setErrorMessage("");
-    setScannedSite(null);
+    setScanDestination(null);
     setStatus("scanning");
   };
 
-  // Full-screen branded loader after successful QR validation.
+  // =========================================================
+  // SUCCESS LOADER
+  // =========================================================
+
   if (status === "success-loader") {
     return (
       <HeritageLoader
-        message="Opening Heritage Collection..."
+        message="Opening Artwork..."
         duration={2200}
         onComplete={() => {
-          if (scannedSite?.slug) {
-            navigate(`/premium/${scannedSite.slug}`, {
-              replace: true,
-            });
-          } else {
-            navigate("/", {
+          if (scanDestination) {
+            navigate(scanDestination, {
               replace: true,
             });
           }
@@ -128,12 +227,19 @@ const ScanQR = () => {
     );
   }
 
-  // Inline branded loader while looking up the QR.
+  // =========================================================
+  // LOOKING UP QR
+  // =========================================================
+
   if (status === "looking-up") {
     return (
       <HeritageLoader message="Finding this heritage place..." />
     );
   }
+
+  // =========================================================
+  // MAIN SCANNER PAGE
+  // =========================================================
 
   return (
     <div className="min-h-screen bg-[#EFE8DE] flex flex-col">
@@ -163,12 +269,14 @@ const ScanQR = () => {
 
         <p className="mt-3 text-sm text-[#E8DCC8] leading-6">
           Point your camera at a HeritageLink QR code to open
-          the heritage collection.
+          the specific artwork.
         </p>
       </div>
 
+      {/* Scanner / Error area */}
       <div className="flex-1 px-5 md:px-8 py-8">
         <div className="bg-white rounded-3xl shadow-lg p-5 md:p-8">
+          {/* Scanner */}
           {status === "scanning" && (
             <QRScanner
               onResult={handleResult}
@@ -176,6 +284,7 @@ const ScanQR = () => {
             />
           )}
 
+          {/* Error */}
           {status === "error" && (
             <div className="py-14 flex flex-col items-center gap-5 text-center px-4">
               <div className="w-20 h-20 rounded-full bg-[#FFF5D8] flex items-center justify-center">
@@ -216,4 +325,3 @@ const ScanQR = () => {
 };
 
 export default ScanQR;
-
