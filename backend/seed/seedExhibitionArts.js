@@ -1342,7 +1342,7 @@ const arts = [
     phone: "9863191824",
     email: "np01cp4a230200@islingtoncollege.edu.np",
     themes: "Kumari, Newari heritage",
-    priceRange: "2,000-5,000",
+    //priceRange: "2,000-5,000",
     //price: "3,500",
   },
   badge: {
