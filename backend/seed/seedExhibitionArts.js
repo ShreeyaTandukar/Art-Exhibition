@@ -1324,7 +1324,7 @@ const arts = [
     "The Kumari holds a very special place in Nepalese culture, representing a living connection between spirituality, tradition and our rich Newari heritage. Through this piece, I wanted to portray not just her beauty, but the quiet strength and purity that she represents.",
   tagline: "PAPER ARTWORK / SKETCH",
   locationLabel: "A4 size",
-  heroImage: "",
+  heroImage: "/images/traditionalArt/kumari-living-goddess.png",
   audioTitle: "Heritage Story",
   audioGuide: "/audio/Mahika.mp3",
   history:
