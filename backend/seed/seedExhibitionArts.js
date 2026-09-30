@@ -1316,50 +1316,42 @@ const arts = [
   },
 
   {
-    slug: "The Last Witness",
-    codePrefix: "MAH",
-    qrId: "HL-120",
-    name: "The Last Witness",
-    shortDescription:
-      "The skull represents the pieces of ourselves that had to die—the old version of us, lost innocence, people we let go of and beliefs that no longer remain. Yet, from those wounds, something new begins to grow.",
-    tagline: "CHARCOAL ARTWORK",
-    locationLabel: "Charcoal",
-    heroImage: "/images/charcoal/HiBaby.jpeg",
-    audioTitle: "Heritage Story",
-    audioGuide: "/audio/mahika.mp3",
-    history:
-      "The skull represents the pieces of ourselves that had to die—the old version of us, lost innocence, people we let go of and beliefs that no longer remain. Yet, from those wounds, something new begins to grow.",
-    material: "Charcoal",
-    craft: "Charcoal drawing",
-    culturalStory:
-      "Skull as symbol of what must die so that something new can grow.",
-    artisan: {
-      name: "Mahika Lakoul",
-      role: "Artist",
-      location: "Nepal",
-      image: "",
-      bio: "Charcoal artist exploring loss, survival and transformation.",
-      email: "np01cp4a230200@islingtoncollege.edu.np",
-      phone: "9863191824",
-      themes: [
-        "Mortality",
-        "Transformation",
-        "Renewal",
-        "Death",
-        "Rebirth",
-        "Growth",
-        "Impermanence",
-      ],
-      //priceRange: "NPR 2,000-5,000",
-    },
-    badge: {
-      title: "Transformation Explorer",
-      image: "/images/badge.jpg",
-      description:
-        "Collected from Mahika Lakoul's Transformation Through Loss and Survival.",
-    },
-    isActive: true,
+  slug: "kumari-the-living-goddess",
+  codePrefix: "MAHIKA1",
+  qrId: "HL-120",
+  name: "Kumari - The Living Goddess",
+  shortDescription:
+    "The Kumari holds a very special place in Nepalese culture, representing a living connection between spirituality, tradition and our rich Newari heritage. Through this piece, I wanted to portray not just her beauty, but the quiet strength and purity that she represents.",
+  tagline: "PAPER ARTWORK / SKETCH",
+  locationLabel: "A4 size",
+  heroImage: "",
+  audioTitle: "Heritage Story",
+  audioGuide: "/audio/Mahika.mp3",
+  history:
+    "The Kumari holds a very special place in Nepalese culture, representing a living connection between spirituality, tradition and our rich Newari heritage. Through this piece, I wanted to portray not just her beauty, but the quiet strength and purity that she represents.",
+  material: "Paper",
+  craft: "Paper Artwork / sketch",
+  culturalStory:
+    "The Kumari represents a living connection between spirituality, tradition, and Newari heritage. This artwork portrays her beauty, quiet strength, and purity.",
+  artisan: {
+    name: "Mahika Lakoul",
+    role: "Artist",
+    location: "Nepal",
+    image: "/images/traditionalArt/kumari-living-goddess.png",
+    bio: "Artist exploring Nepalese culture and heritage through artwork.",
+    phone: "9863191824",
+    email: "np01cp4a230200@islingtoncollege.edu.np",
+    themes: "Kumari, Newari heritage",
+    priceRange: "2,000-5,000",
+    //price: "3,500",
   },
+  badge: {
+    title: "Kumari Explorer",
+    image: "/images/badge.jpg",
+    description: "Collected from Mahika Lakoul's Kumari - The Living Goddess.",
+  },
+  isActive: true,
+},
 
   {
     slug: "through-his-eyes",
@@ -1653,8 +1645,42 @@ const arts = [
     },
     isActive: true,
   },
+  {
+  slug: "mountains",
+  codePrefix: "PRAPTI1",
+  qrId: "HL-132",
+  name: "Mountains",
+  shortDescription:
+    "A piece of Nature made in canvas roll using acrylic medium.",
+  tagline: "MOUNTAIN ARTWORK",
+  locationLabel: "Canvas / acrylic",
+  heroImage: "/images/Handpainted/Prapti-Bhetawal.jpg",
+  audioTitle: "Heritage Story",
+  audioGuide: "/audio/prapti1.mp3",
+  history:
+    "A piece of Nature made in canvas roll using acrylic medium.",
+  material: "Canvas roll / acrylic",
+  craft: "Canvas painting",
+  culturalStory:
+    "A nature-inspired artwork portraying the beauty and presence of mountains through acrylic on canvas.",
+  artisan: {
+    name: "Prapti Bhetawal",
+    role: "Artist",
+    location: "Nepal",
+    image: "",
+    bio: "Artist inspired by nature and the beauty of Nepal's landscapes.",
+    //price: "3,000",
+  },
+  badge: {
+    title: "Mountains Explorer",
+    image: "/images/badge.jpg",
+    description: "Collected from Prapti Bhetawal's Mountains.",
+  },
+  isActive: true,
+},
   
 ];
+
 
 // ================================================================
 // ADD MAKING PROCESS TO EVERY ARTWORK
