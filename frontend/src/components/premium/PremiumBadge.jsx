@@ -101,9 +101,7 @@ const PremiumBadge = ({ site, groupType }) => {
           onClick={() =>
             navigate(
               isAuthenticated
-                ? isMoneyMaze
-                  ? "/achievements"
-                  : "/achievements"
+                ? "/profile"
                 : "/login"
             )
           }

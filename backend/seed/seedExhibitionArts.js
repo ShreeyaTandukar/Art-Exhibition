@@ -1678,6 +1678,59 @@ const arts = [
   },
   isActive: true,
 },
+{
+  slug: "journey-into-the-himalayas",
+  codePrefix: "RUP3",
+  qrId: "HL-129",
+  name: "Journey into the Himalayas",
+
+  shortDescription:
+    "A peaceful Himalayan landscape showing two trekkers walking through a snowy trail toward the majestic mountains. The cool blue and white tones represent the beauty, calmness, and purity of the Himalayas, while the trekkers symbolize adventure, courage, and the journey toward new experiences.",
+
+  tagline: "HIMALAYAN LANDSCAPE ART",
+  locationLabel: "Himalayas",
+  heroImage: "/images/Handcrafted/journey-into-the-mountains.jpeg",
+
+  audioTitle: "Heritage Story",
+  audioGuide: "/audio/rupesh2.mp3",
+
+  history:
+    "Journey into the Himalayas captures a peaceful moment along a snowy mountain trail, where two trekkers make their way toward the majestic Himalayan peaks. The cool blue and white tones create a feeling of calmness, purity, and quiet beauty. The mountains rise ahead as a reminder of the vastness and strength of nature, while the two trekkers represent adventure, courage, and the willingness to move forward into new experiences. Through this artwork, the journey becomes more than a walk through the mountains — it becomes a reflection of exploration, discovery, and the courage to follow a path toward something greater.",
+
+  material: "Paint on canvas",
+  craft: "Handpainted",
+
+  culturalStory:
+    "A peaceful Himalayan journey where snowy trails, majestic mountains, and two trekkers represent nature, adventure, courage, and exploration.",
+
+  artisan: {
+    name: "Rupesh Poddar",
+    role: "Artist",
+    location: "Nepal",
+    image: "",
+    bio: "Painter inspired by Himalayan landscapes, nature, texture, and the spirit of exploration.",
+    email: "rupeshpoddar032@gmail.com",
+    phone: "9844345566",
+    themes: [
+      "Himalayas",
+      "Mountains",
+      "Nature",
+      "Adventure",
+      "Exploration",
+      "Landscape",
+    ],
+    priceRange: "NPR 10,000",
+  },
+
+  badge: {
+    title: "Journey into the Himalayas Explorer",
+    image: "/images/badge.jpg",
+    description:
+      "Collected from Rupesh Poddar's Journey into the Himalayas.",
+  },
+
+  isActive: true,
+}
   
 ];
 
